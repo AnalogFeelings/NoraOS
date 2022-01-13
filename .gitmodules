@@ -1,0 +1,7 @@
+[submodule "subprojects/stivale"]
+	path = subprojects/stivale
+	url = https://github.com/stivale/stivale
+[submodule "subprojects/limine"]
+	path = subprojects/limine
+	url = https://github.com/limine-bootloader/limine.git
+	branch = latest-binary
