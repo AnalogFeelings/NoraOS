@@ -4,6 +4,7 @@ UCHAR *VidAddr;
 ULONG64 VidPitch, VidBpp;
 USHORT VidWidth, VidHeight;
 ULONG64 VidX, VidY;
+UINT VidTexColor;
 
 unsigned char KiDisplayFont[4096] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -361,15 +362,16 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 	VidBpp = VidFramebuffer->framebuffer_bpp;
 	VidWidth = VidFramebuffer->framebuffer_width;
 	VidHeight = VidFramebuffer->framebuffer_height;
+	VidTexColor = 0xffffff;
 }
 
-VOID HalVidPutPx(INT x, INT y, UINT Color) {
+static VOID HalVidPutPx(INT x, INT y, UINT Color) {
 	ULONG64 Py = y * VidPitch;
 	ULONG64 Px = x * (VidBpp / 8);
 	*(UINT *)(&VidAddr[Px + Py]) = Color;
 }
 
-VOID HalVidPutc(CHAR c, INT X, INT Y) {
+static VOID HalVidPutc(CHAR c, INT X, INT Y) {
 	X *= 8;
 	Y *= 16;
 	UCHAR Line;
@@ -378,10 +380,58 @@ VOID HalVidPutc(CHAR c, INT X, INT Y) {
 		for (UINT YBit = 0; YBit <= 8; YBit++) {
 			if (Line & (1 << (8 - YBit - 1))) {
 				if (VidWidth * VidHeight > (Y + XBit) * VidWidth + X + YBit) {
-					HalVidPutPx(X + YBit, Y + XBit, 0xffffff);
+					HalVidPutPx(X + YBit, Y + XBit, VidTexColor);
 				}
 			}
 		}
+	}
+}
+
+VOID HalVidClearScreen(UINT Color) {
+	for (INT X = 0; X < VidWidth; X++) {
+		for (INT Y = 0; Y < VidHeight; Y++) {
+			HalVidPutPx(X, Y, Color);
+		}
+	}
+	VidX = 0;
+	VidY = 0;
+}
+
+VOID HalVidSetTextColor(UINT Color) {
+	VidTexColor = Color;
+}
+
+VOID HalVidPrintAt(PCSTR String, INT X, INT Y) {
+	for (UINT CurrentChar = 0; String[CurrentChar] != 0; CurrentChar++) {
+		switch (String[CurrentChar]) {
+			case '\n':
+				Y++;
+				X = 0;
+				break;
+			case '\r':
+				X = 0;
+				break;
+			default:
+				HalVidPutc(String[CurrentChar], X, Y);
+				X++;
+				break;
+		}
+	}
+}
+
+VOID HalVidPrintC(CHAR c) {
+	switch (c) {
+		case '\n':
+			VidY++;
+			VidX = 0;
+			break;
+		case '\r':
+			VidX = 0;
+			break;
+		default:
+			HalVidPutc(c, VidX, VidY);
+			VidX++;
+			break;
 	}
 }
 
