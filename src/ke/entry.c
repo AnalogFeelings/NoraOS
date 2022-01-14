@@ -1,6 +1,8 @@
 #include <hal/vid.h>
 #include <ke/stivale.h>
+#include <mm/mm.h>
 #include <rtl/debug.h>
+#include <rtl/mem.h>
 #include <stivale2.h>
 
 STATIC UCHAR Stack[32768];
@@ -21,12 +23,20 @@ __attribute__((section(".stivale2hdr"),
 VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	struct stivale2_struct_tag_framebuffer *FrameBuffer =
 		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
+    struct stivale2_struct_tag_memmap *MemoryMap = KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 	HalVidInit(FrameBuffer);
+    MmPhysInit(MemoryMap);
 	for (INT i = 0; i < 10; i++)
 		HalVidPrint("Hello World\n");
 	RtlDebugPrint("printf test: %x\n", 0xDEADBEEFDEADBEEF);
 	RtlDebugPrint("printf test: %d\n", 650);
 	RtlDebugPrint("printf test: %s\n", "funny");
+    RtlDebugPrint("Allocating memory to x\n");
+    CHAR* x = MmAllocatePhysicalZero(1);
+    RtlDebugPrint("x located at %x\n", &x);
+    RtlStringCopy(x, "Funny");
+    RtlDebugPrint("x = %s\n", x);
+    MmFreePages(x, 1);
 	for (;;)
 		;
 }

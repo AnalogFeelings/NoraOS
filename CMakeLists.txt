@@ -6,7 +6,7 @@ project(NoraOS VERSION 0.0.1 DESCRIPTION "A megalithic kernel thing.")
 enable_language(ASM_NASM)
 
 set(CMAKE_EXECUTABLE_SUFFIX ".elf")
-file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.c")
+file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.c" "src/*.asm")
 add_executable(nora ${SOURCES})
 
 target_compile_options(nora PUBLIC $<$<COMPILE_LANGUAGE:C,CXX>:
