@@ -6,10 +6,8 @@
 #define EXTERN extern
 #define STATIC static
 #define VOLATILE volatile
-#define DECLSPEC __declspec
 #define CONST const
-#define FORCEINLINE __forceinline
-#define UNALIGNED __unaligned
+#define INLINE inline
 
 typedef unsigned char UCHAR, *PUCHAR;
 typedef unsigned short USHORT, *PUSHORT;
@@ -33,6 +31,8 @@ typedef unsigned long long ULONG32_PTR;
 typedef unsigned long long ULONG64_PTR;
 
 typedef unsigned char BOOLEAN, *PBOOLEAN;
+typedef unsigned char BYTE, *PBYTE;
+typedef unsigned long int SIZE_T;
 
 #define TRUE 1
 #define FALSE 0

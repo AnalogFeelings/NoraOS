@@ -19,21 +19,21 @@ static VOID RtlPrintf(PCSTR fmt, va_list args) {
 				}
 			}
 			if (*fmt == 'x' || *fmt == 'p') {
-				char string[17];
-				uint64_t number = va_arg(args, ULONG64);
-				for (int i = 16; i > 0; number >>= 4) {
+				char string[17] = {0};
+				ULONG64 number = va_arg(args, ULONG64);
+				for (INT i = 16; i > 0; number >>= 4) {
 					string[--i] = "0123456789abcdef"[number & 0x0f];
 				}
 				HalVidPrint(string);
 			}
 			if (*fmt == 'd') {
-				char string[21];
-				uint64_t number = va_arg(args, ULONG64);
-				for (int i = 20; i > 0;) {
+				char string[21] = {0};
+				ULONG64 number = va_arg(args, ULONG64);
+				for (INT i = 20; i > 0;) {
 					string[--i] = number % 10 + '0';
 					number /= 10;
 				}
-				size_t counter = 0;
+				SIZE_T counter = 0;
 				while (string[counter] == '0' && counter < 19) {
 					counter++;
 				}
