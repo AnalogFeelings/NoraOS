@@ -1,6 +1,8 @@
 #pragma once
 
 #include <nos_types.h>
+#include <stdarg.h>
+#include <stddef.h>
 
 #define COM1 0x3F8
 
@@ -19,4 +21,5 @@
 
 VOID KdInitSerial(VOID);
 VOID KdPutChar(CHAR c);
+VOID KdPrintFormat(PCSTR Fmt, ...);
 VOID KdPrint(PCSTR String);

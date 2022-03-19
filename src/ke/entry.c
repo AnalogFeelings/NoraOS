@@ -30,7 +30,7 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
     KdInitSerial();
 	HalVidInit(FrameBuffer);
     MmPhysInit(MemoryMap);
-    KdPrint("Hello from serial!");
+    KdPrintFormat("\nAyo, framebuffer address: %p", FrameBuffer->framebuffer_addr);
 	for (;;)
 		;
 }
