@@ -28,6 +28,7 @@ target_compile_options(nora PUBLIC $<$<COMPILE_LANGUAGE:C,CXX>:
     -mno-avx512f
     -mno-red-zone
     -mcmodel=kernel
+    -masm=intel
 >)
 
 target_link_options(nora PUBLIC
@@ -54,4 +55,4 @@ add_custom_command(OUTPUT ${ISO_IMAGE} DEPENDS nora
 )
 
 add_custom_target(iso ALL DEPENDS ${ISO_IMAGE})
-add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -M q35 -m 2G -cdrom ${ISO_IMAGE})
+add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -M q35 -serial stdio -m 2G -cdrom ${ISO_IMAGE})

@@ -5,6 +5,7 @@
 #include <rtl/mem.h>
 #include <stivale2.h>
 #include <hal/gdt.h>
+#include <kdcom/kdcom.h>
 
 STATIC UCHAR Stack[32768];
 
@@ -26,11 +27,10 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	struct stivale2_struct_tag_framebuffer *FrameBuffer =
 		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
     struct stivale2_struct_tag_memmap *MemoryMap = KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+    KdInitSerial();
 	HalVidInit(FrameBuffer);
     MmPhysInit(MemoryMap);
-    for(int i = 0; i <= 90; i++) {
-        RtlDebugPrint("%d\n", i);
-    }
+    KdPrint("Hello from serial!");
 	for (;;)
 		;
 }
