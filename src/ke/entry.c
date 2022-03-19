@@ -1,11 +1,11 @@
+#include <hal/gdt.h>
 #include <hal/vid.h>
+#include <kdcom/kdcom.h>
 #include <ke/stivale.h>
 #include <mm/mm.h>
 #include <rtl/debug.h>
 #include <rtl/mem.h>
 #include <stivale2.h>
-#include <hal/gdt.h>
-#include <kdcom/kdcom.h>
 
 STATIC UCHAR Stack[32768];
 
@@ -26,11 +26,12 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	HalGDTInit();
 	struct stivale2_struct_tag_framebuffer *FrameBuffer =
 		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
-    struct stivale2_struct_tag_memmap *MemoryMap = KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
-    KdInitSerial();
+	struct stivale2_struct_tag_memmap *MemoryMap =
+		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+	KdInitSerial();
 	HalVidInit(FrameBuffer);
-    MmPhysInit(MemoryMap);
-    KdPrintFormat("\nAyo, framebuffer address: %p", FrameBuffer->framebuffer_addr);
+	MmPhysInit(MemoryMap);
+	KdPrintFormat("\nAyo, framebuffer address: %p", FrameBuffer->framebuffer_addr);
 	for (;;)
 		;
 }
