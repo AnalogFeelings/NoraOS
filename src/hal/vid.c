@@ -1,10 +1,12 @@
 #include <hal/vid.h>
+#include <rtl/debug.h>
 
-UCHAR *VidAddr;
+UINT *VidAddr;
 ULONG64 VidPitch, VidBpp;
 USHORT VidWidth, VidHeight;
 ULONG64 VidX, VidY;
 UINT VidTexColor;
+UINT VidBgColor;
 
 unsigned char KiDisplayFont[4096] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -357,18 +359,28 @@ unsigned char KiDisplayFont[4096] = {
 #define ISO_CHAR_HEIGHT 16
 
 VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
-	VidAddr = (UCHAR *)VidFramebuffer->framebuffer_addr;
+	VidAddr = (UINT*)VidFramebuffer->framebuffer_addr;
 	VidPitch = VidFramebuffer->framebuffer_pitch;
 	VidBpp = VidFramebuffer->framebuffer_bpp;
 	VidWidth = VidFramebuffer->framebuffer_width;
 	VidHeight = VidFramebuffer->framebuffer_height;
 	VidTexColor = 0xffffff;
+    VidBgColor = 0x000000;
+}
+
+VOID HalVidScroll(VOID) {
+    VidY--;
+    size_t RowSize = (VidPitch * ISO_CHAR_HEIGHT) / sizeof(UINT);
+    size_t ScreenSize = ((VidPitch * ISO_CHAR_HEIGHT) * (VidHeight / ISO_CHAR_HEIGHT)) / sizeof(UINT);
+
+    for(size_t i = 0; i < ScreenSize - RowSize; i++) {
+        VidAddr[i] = VidAddr[i + RowSize];
+        VidAddr[i + RowSize] = VidBgColor;
+    }
 }
 
 static VOID HalVidPutPx(INT x, INT y, UINT Color) {
-	ULONG64 Py = y * VidPitch;
-	ULONG64 Px = x * (VidBpp / 8);
-	*(UINT *)(&VidAddr[Px + Py]) = Color;
+	VidAddr[y * (VidPitch / sizeof(UINT)) + x] = Color;
 }
 
 static VOID HalVidPutc(CHAR c, INT X, INT Y) {
@@ -424,31 +436,33 @@ VOID HalVidPrintC(CHAR c) {
 		case '\n':
 			VidY++;
 			VidX = 0;
-			break;
+            if(VidY > VidHeight / ISO_CHAR_HEIGHT - 1) {
+                HalVidScroll();
+            }
+			return;
+        case '\b':
+            VidX--;
+            return;
+        case '\t':
+            VidX += 4;
+            return;
 		case '\r':
 			VidX = 0;
-			break;
-		default:
-			HalVidPutc(c, VidX, VidY);
-			VidX++;
-			break;
+			return;
 	}
+	if(VidX * ISO_CHAR_WIDTH >= VidWidth) {
+        VidX = 0;
+        VidY++;
+        if(VidY > VidHeight / ISO_CHAR_HEIGHT - 1) {
+            HalVidScroll();
+        }
+    }
+    HalVidPutc(c, VidX, VidY);
+    VidX++;
 }
 
 VOID HalVidPrint(PCSTR String) {
-	for (UINT CurrentChar = 0; String[CurrentChar] != 0; CurrentChar++) {
-		switch (String[CurrentChar]) {
-			case '\n':
-				VidY++;
-				VidX = 0;
-				break;
-			case '\r':
-				VidX = 0;
-				break;
-			default:
-				HalVidPutc(String[CurrentChar], VidX, VidY);
-				VidX++;
-				break;
-		}
-	}
+	while(*String != '\0') {
+        HalVidPrintC(*String++);
+    }
 }

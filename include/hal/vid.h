@@ -9,3 +9,4 @@ VOID HalVidSetTextColor(UINT Color);
 VOID HalVidPrintAt(PCSTR String, INT X, INT Y);
 VOID HalVidPrintC(CHAR c);
 VOID HalVidPrint(PCSTR String);
+VOID HalVidScroll(VOID);

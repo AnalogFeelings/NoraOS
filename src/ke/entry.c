@@ -28,7 +28,9 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
     struct stivale2_struct_tag_memmap *MemoryMap = KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
 	HalVidInit(FrameBuffer);
     MmPhysInit(MemoryMap);
-	RtlDebugPrint("Hello World!\n");
+    for(int i = 0; i <= 90; i++) {
+        RtlDebugPrint("%d\n", i);
+    }
 	for (;;)
 		;
 }
