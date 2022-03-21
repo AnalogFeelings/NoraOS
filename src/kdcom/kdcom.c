@@ -1,5 +1,6 @@
 #include <io/ports.h>
 #include <kdcom/kdcom.h>
+#include <nos_info.h>
 
 STATIC BOOLEAN KdSerialInitialized = FALSE;
 
@@ -31,7 +32,11 @@ VOID KdInitSerial(VOID) {
 	IoOutputByte(COM1 + COM_MODEM_CONTROL_REG,
 				 0x0F); // Success. Set mode back to normal.
 	KdSerialInitialized = TRUE;
-	return;
+
+	KdPrint("\n==============================================\n");
+	KdPrintFormat("NoraOS Version %d.%d.%d commit-%s-%s\n", NOS_VERSION_MAJOR, NOS_VERSION_MINOR, NOS_VERSION_PATCH, NOS_COMMIT_HASH, NOS_BRANCH);
+	KdPrintFormat("Built at %s %s\n", __DATE__, __TIME__);
+	KdPrint("==============================================\n");
 }
 
 STATIC BOOLEAN KdIsTransmitEmpty(VOID) {

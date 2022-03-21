@@ -44,6 +44,24 @@ target_include_directories(nora PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/stivale
 )
 
+# Stack Overflow is a blessing
+# =============================
+# Get the current working branch
+execute_process(
+    COMMAND git rev-parse --abbrev-ref HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE NOS_BRANCH
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+# Get the latest commit hash
+execute_process(
+    COMMAND git rev-parse --short HEAD
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
+    OUTPUT_VARIABLE NOS_COMMIT_HASH
+    OUTPUT_STRIP_TRAILING_WHITESPACE)
+
+add_compile_definitions(NOS_BRANCH=\"${NOS_BRANCH}\" NOS_COMMIT_HASH=\"${NOS_COMMIT_HASH}\")
+
 set(ISO_IMAGE ${PROJECT_NAME}.iso)
 add_custom_command(OUTPUT ${ISO_IMAGE} DEPENDS nora
     COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine
