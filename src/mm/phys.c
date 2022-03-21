@@ -10,7 +10,7 @@
 #define BIT_CLEAR(__bit) (MiPhysBitmap[(__bit) / 8] &= ~(1 << ((__bit) % 8)))
 #define BIT_TEST(__bit) ((MiPhysBitmap[(__bit) / 8] >> ((__bit) % 8)) & 1)
 
-static UCHAR *MiPhysBitmap = 0;
+STATIC UCHAR *MiPhysBitmap = 0;
 ULONG64 HighestPage = 0;
 
 VOID MiFreePage(VOID *Address) {

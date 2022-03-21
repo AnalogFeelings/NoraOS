@@ -20,5 +20,5 @@ struct GDT {
 	struct GDT_ENTRY Entry[3];
 } __attribute__((packed));
 
-extern VOID HalLoadGDT(struct GDT_POINTER *GdtPtr);
+EXTERN VOID HalLoadGDT(struct GDT_POINTER *GdtPtr);
 VOID HalGDTInit(VOID);

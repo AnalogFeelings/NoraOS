@@ -48,7 +48,7 @@ VOID KdPutChar(CHAR c) {
 	IoOutputByte(COM1, c);
 }
 
-static VOID KdPrintf(PCSTR fmt, va_list args) {
+STATIC VOID KdPrintf(PCSTR fmt, va_list args) {
 	while (*fmt) {
 		if (*fmt == '%') {
 			fmt++;
@@ -59,14 +59,14 @@ static VOID KdPrintf(PCSTR fmt, va_list args) {
 				KdPrint(va_arg(args, PCSTR));
 			}
 			if (*fmt == 'S') {
-				const char *str = va_arg(args, PCSTR);
-				size_t len = va_arg(args, size_t);
-				for (size_t i = 0; i < len; i++) {
+				PCSTR str = va_arg(args, PCSTR);
+				SIZE_T len = va_arg(args, size_t);
+				for (SIZE_T i = 0; i < len; i++) {
 					KdPutChar(str[i]);
 				}
 			}
 			if (*fmt == 'x' || *fmt == 'p') {
-				char string[17] = {0};
+				CHAR string[17] = {0};
 				ULONG64 number = va_arg(args, ULONG64);
 				for (INT i = 16; i > 0; number >>= 4) {
 					string[--i] = "0123456789abcdef"[number & 0x0f];
@@ -74,7 +74,7 @@ static VOID KdPrintf(PCSTR fmt, va_list args) {
 				KdPrint(string);
 			}
 			if (*fmt == 'd') {
-				char string[21] = {0};
+				CHAR string[21] = {0};
 				ULONG64 number = va_arg(args, ULONG64);
 				for (INT i = 20; i > 0;) {
 					string[--i] = number % 10 + '0';

@@ -1,6 +1,6 @@
 #include <rtl/mem.h>
 
-VOID RtlStringCopy(CHAR *Dest, PCSTR Source) {
+VOID RtlStringCopy(PCHAR Dest, PCSTR Source) {
 	for (; (*Dest = *Source); Source++, Dest++)
 		;
 }

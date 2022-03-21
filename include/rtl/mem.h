@@ -7,5 +7,5 @@
 #define RtlZeroMemory(A, B) RtlSetMemory(A, 0, B)
 #define RtlCompareMemory __builtin_memcmp
 
-VOID RtlStringCopy(CHAR *Dest, PCSTR Source);
+VOID RtlStringCopy(PCHAR Dest, PCSTR Source);
 ULONG64 RtlStringLength(PCSTR String);

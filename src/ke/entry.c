@@ -9,7 +9,7 @@
 
 STATIC UCHAR Stack[32768];
 
-static struct stivale2_header_tag_framebuffer FramebufferHdrTag = {
+STATIC struct stivale2_header_tag_framebuffer FramebufferHdrTag = {
 	.tag = {.identifier = STIVALE2_HEADER_TAG_FRAMEBUFFER_ID, .next = 0},
 	.framebuffer_width = 0,
 	.framebuffer_height = 0,

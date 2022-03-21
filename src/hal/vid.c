@@ -8,7 +8,7 @@ ULONG64 VidX, VidY;
 UINT VidTexColor;
 UINT VidBgColor;
 
-unsigned char KiDisplayFont[4096] = {
+UCHAR KiDisplayFont[4096] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -370,12 +370,12 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 
 VOID HalVidScroll(VOID) {
 	VidY--;
-	size_t RowSize = (VidPitch * ISO_CHAR_HEIGHT) / sizeof(UINT);
-	size_t ScreenSize =
+	SIZE_T RowSize = (VidPitch * ISO_CHAR_HEIGHT) / sizeof(UINT);
+	SIZE_T ScreenSize =
 		((VidPitch * ISO_CHAR_HEIGHT) * (VidHeight / ISO_CHAR_HEIGHT)) /
 		sizeof(UINT);
 
-	for (size_t i = 0; i < ScreenSize - RowSize; i++) {
+	for (SIZE_T i = 0; i < ScreenSize - RowSize; i++) {
 		VidAddr[i] = VidAddr[i + RowSize];
 		VidAddr[i + RowSize] = VidBgColor;
 	}
@@ -415,6 +415,8 @@ VOID HalVidSetTextColor(UINT Color) {
 	VidTexColor = Color;
 }
 
+//We probably should remove this.
+//Maybe we could expose a function to set the "cursor" position?
 VOID HalVidPrintAt(PCSTR String, INT X, INT Y) {
 	for (UINT CurrentChar = 0; String[CurrentChar] != 0; CurrentChar++) {
 		switch (String[CurrentChar]) {

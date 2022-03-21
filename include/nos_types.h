@@ -16,7 +16,7 @@ typedef unsigned long ULONG, *PULONG;
 typedef unsigned long ULONG32, *PULONG32;
 typedef unsigned long long ULONG64, *PULONG64;
 
-typedef signed char CHAR, *PCHAR;
+typedef char CHAR, *PCHAR;
 typedef CONST char *PCSTR;
 typedef signed short SHORT, *PSHORT;
 typedef signed int INT, *PINT;
