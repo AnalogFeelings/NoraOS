@@ -33,7 +33,8 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	KdInitSerial();
 	HalVidInit(FrameBuffer);
 	MmPhysInit(MemoryMap);
-	KdPrintFormat("\nAyo, framebuffer address: %p", FrameBuffer->framebuffer_addr);
+	KdPrintFormat("\nAyo, framebuffer address: %p\n", FrameBuffer->framebuffer_addr);
+	asm volatile("int3");
 	for (;;)
 		;
 }

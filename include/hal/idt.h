@@ -18,3 +18,4 @@ struct IDT_PTR {
 } __attribute__((packed));
 
 VOID HalIDTInit(VOID);
+VOID HalIDTSetDescriptor(UCHAR Vector, VOID* Handler, UCHAR Ist);
