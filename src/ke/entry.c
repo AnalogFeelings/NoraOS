@@ -2,7 +2,7 @@
 #include <hal/idt.h>
 #include <hal/vid.h>
 #include <kdcom/kdcom.h>
-#include <ke/stivale.h>
+#include <ke/ke.h>
 #include <mm/mm.h>
 #include <rtl/debug.h>
 #include <rtl/mem.h>
