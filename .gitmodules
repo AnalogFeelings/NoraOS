@@ -1,9 +1,0 @@
-[submodule "subprojects/stivale"]
-	path = subprojects/stivale
-	ignore = dirty
-	url = https://github.com/stivale/stivale
-[submodule "subprojects/limine"]
-	path = subprojects/limine
-	ignore = dirty
-	url = https://github.com/limine-bootloader/limine.git
-	branch = latest-binary
