@@ -1,12 +1,8 @@
 #include <hal/vid.h>
 #include <rtl/debug.h>
-
-UINT *VidAddr;
-ULONG64 VidPitch, VidBpp;
-USHORT VidWidth, VidHeight;
-ULONG64 VidX, VidY;
-UINT VidTexColor;
-UINT VidBgColor;
+#include <mm/liballoc.h>
+#include <rtl/mem.h>
+#include <kdcom/kdcom.h>
 
 UCHAR KiDisplayFont[4096] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -358,34 +354,29 @@ UCHAR KiDisplayFont[4096] = {
 #define ISO_CHAR_WIDTH 8
 #define ISO_CHAR_HEIGHT 16
 
+struct FRAMEBUFFER HalVidFramebuffer = {0};
+
 VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
-	VidAddr = (UINT *)VidFramebuffer->framebuffer_addr;
-	VidPitch = VidFramebuffer->framebuffer_pitch;
-	VidBpp = VidFramebuffer->framebuffer_bpp;
-	VidWidth = VidFramebuffer->framebuffer_width;
-	VidHeight = VidFramebuffer->framebuffer_height;
-	VidTexColor = 0xffffff;
-	VidBgColor = 0x000000;
+	HalVidFramebuffer.VideoAddress = (PUINT)VidFramebuffer->framebuffer_addr;
+	HalVidFramebuffer.Pitch = VidFramebuffer->framebuffer_pitch;
+	HalVidFramebuffer.Bpp = VidFramebuffer->framebuffer_bpp;
+	HalVidFramebuffer.Width = VidFramebuffer->framebuffer_width;
+	HalVidFramebuffer.Height = VidFramebuffer->framebuffer_height;
+	//HalVidFramebuffer.BackAddress = (PUINT)malloc(HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+	HalVidFramebuffer.TextColor = 0xFFFFFF;
+	HalVidFramebuffer.BackgroundColor = 0x000000;
+	HalVidFramebuffer.TextX = 0;
+	HalVidFramebuffer.TextY = 0;
 }
 
-VOID HalVidScroll(VOID) {
-	VidY--;
-	SIZE_T RowSize = (VidPitch * ISO_CHAR_HEIGHT) / sizeof(UINT);
-	SIZE_T ScreenSize =
-		((VidPitch * ISO_CHAR_HEIGHT) * (VidHeight / ISO_CHAR_HEIGHT)) /
-		sizeof(UINT);
-
-	for (SIZE_T i = 0; i < ScreenSize - RowSize; i++) {
-		VidAddr[i] = VidAddr[i + RowSize];
-		VidAddr[i + RowSize] = VidBgColor;
-	}
+STATIC VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
+	if(direct)
+		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+	else
+		HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 }
 
-static VOID HalVidPutPx(INT x, INT y, UINT Color) {
-	VidAddr[y * (VidPitch / sizeof(UINT)) + x] = Color;
-}
-
-static VOID HalVidPutc(CHAR c, INT X, INT Y) {
+STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
 	X *= 8;
 	Y *= 16;
 	UCHAR Line;
@@ -393,76 +384,81 @@ static VOID HalVidPutc(CHAR c, INT X, INT Y) {
 		Line = KiDisplayFont[c * 16 + XBit];
 		for (UINT YBit = 0; YBit <= 8; YBit++) {
 			if (Line & (1 << (8 - YBit - 1))) {
-				if (VidWidth * VidHeight > (Y + XBit) * VidWidth + X + YBit) {
-					HalVidPutPx(X + YBit, Y + XBit, VidTexColor);
+				if (HalVidFramebuffer.Width * HalVidFramebuffer.Height > (Y + XBit) * HalVidFramebuffer.Width + X + YBit) {
+					HalVidPutPx(X + YBit, Y + XBit, HalVidFramebuffer.TextColor, TRUE);
 				}
 			}
 		}
 	}
 }
 
+STATIC VOID HalVidSwap() {
+	RtlCopyMemory(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.BackAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+}
+
+VOID HalVidScroll(VOID) {
+	HalVidFramebuffer.TextY--;
+
+	//We should cache this somewhere, division and multiplication are very slow compared to other operations.
+	SIZE_T RowSize = (HalVidFramebuffer.Pitch * ISO_CHAR_HEIGHT) / sizeof(UINT);
+	SIZE_T ScreenSize =
+		((HalVidFramebuffer.Pitch * ISO_CHAR_HEIGHT) * (HalVidFramebuffer.Height / ISO_CHAR_HEIGHT)) /
+		sizeof(UINT);
+
+	RtlCopyMemory(HalVidFramebuffer.BackAddress, HalVidFramebuffer.VideoAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+
+	for (SIZE_T i = 0; i < ScreenSize - RowSize; i++) {
+		HalVidFramebuffer.BackAddress[i] = HalVidFramebuffer.BackAddress[i + RowSize];
+		HalVidFramebuffer.BackAddress[i + RowSize] = HalVidFramebuffer.BackgroundColor;
+	}
+
+	HalVidSwap();
+}
+
 VOID HalVidClearScreen(UINT Color) {
-	for (INT X = 0; X < VidWidth; X++) {
-		for (INT Y = 0; Y < VidHeight; Y++) {
-			HalVidPutPx(X, Y, Color);
+	for (INT X = 0; X < HalVidFramebuffer.Width; X++) {
+		for (INT Y = 0; Y < HalVidFramebuffer.Height; Y++) {
+			HalVidPutPx(X, Y, Color, FALSE);
 		}
 	}
-	VidX = 0;
-	VidY = 0;
+	HalVidFramebuffer.TextX = 0;
+	HalVidFramebuffer.TextY = 0;
+
+	HalVidSwap();
 }
 
 VOID HalVidSetTextColor(UINT Color) {
-	VidTexColor = Color;
-}
-
-//We probably should remove this.
-//Maybe we could expose a function to set the "cursor" position?
-VOID HalVidPrintAt(PCSTR String, INT X, INT Y) {
-	for (UINT CurrentChar = 0; String[CurrentChar] != 0; CurrentChar++) {
-		switch (String[CurrentChar]) {
-			case '\n':
-				Y++;
-				X = 0;
-				break;
-			case '\r':
-				X = 0;
-				break;
-			default:
-				HalVidPutc(String[CurrentChar], X, Y);
-				X++;
-				break;
-		}
-	}
+	HalVidFramebuffer.TextColor = Color;
 }
 
 VOID HalVidPrintC(CHAR c) {
 	switch (c) {
 		case '\n':
-			VidY++;
-			VidX = 0;
-			if (VidY > VidHeight / ISO_CHAR_HEIGHT - 1) {
+			HalVidFramebuffer.TextY++;
+			HalVidFramebuffer.TextX = 0;
+			if (HalVidFramebuffer.TextY > HalVidFramebuffer.Height / ISO_CHAR_HEIGHT - 1) {
 				HalVidScroll();
 			}
 			return;
 		case '\b':
-			VidX--;
+			HalVidFramebuffer.TextX--;
 			return;
 		case '\t':
-			VidX += 4;
+			HalVidFramebuffer.TextX += 4;
 			return;
 		case '\r':
-			VidX = 0;
+			HalVidFramebuffer.TextX = 0;
 			return;
 	}
-	if (VidX * ISO_CHAR_WIDTH >= VidWidth) {
-		VidX = 0;
-		VidY++;
-		if (VidY > VidHeight / ISO_CHAR_HEIGHT - 1) {
+	if (HalVidFramebuffer.TextX * ISO_CHAR_WIDTH >= HalVidFramebuffer.Width) {
+		HalVidFramebuffer.TextX = 0;
+		HalVidFramebuffer.TextY++;
+		if (HalVidFramebuffer.TextY > HalVidFramebuffer.Height / ISO_CHAR_HEIGHT - 1) {
 			HalVidScroll();
 		}
 	}
-	HalVidPutc(c, VidX, VidY);
-	VidX++;
+	HalVidPutc(c, HalVidFramebuffer.TextX, HalVidFramebuffer.TextY);
+	HalVidFramebuffer.TextX++;
 }
 
 VOID HalVidPrint(PCSTR String) {

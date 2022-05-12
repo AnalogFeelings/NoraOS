@@ -16,8 +16,8 @@ STATIC struct stivale2_header_tag_framebuffer FramebufferHdrTag = {
 	.framebuffer_height = 0,
 	.framebuffer_bpp = 0};
 
-__attribute__((section(".stivale2hdr"),
-			   used)) static struct stivale2_header stivale_hdr = {
+__attribute__((section(".stivale2hdr"), used))
+static struct stivale2_header stivale_hdr = {
 	.entry_point = 0,
 	.stack = (ULONG64_PTR)Stack + sizeof(Stack),
 	.flags = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4),
@@ -26,15 +26,19 @@ __attribute__((section(".stivale2hdr"),
 VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	HalGDTInit();
 	HalIDTInit();
+
 	struct stivale2_struct_tag_framebuffer *FrameBuffer =
 		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_FRAMEBUFFER_ID);
 	struct stivale2_struct_tag_memmap *MemoryMap =
 		KiGetStivaleTag(Stivale2Struct, STIVALE2_STRUCT_TAG_MEMMAP_ID);
+
 	KdInitSerial();
-	HalVidInit(FrameBuffer);
 	MmPhysInit(MemoryMap);
+	HalVidInit(FrameBuffer);
+
 	KdPrintFormat("\nAyo, framebuffer address: %p\n", FrameBuffer->framebuffer_addr);
-	asm volatile("int3");
+	KdPrintFormat("Ayo, video framebuffer size: %dx%d\n", FrameBuffer->framebuffer_width, FrameBuffer->framebuffer_height);
+
 	for (;;)
 		;
 }
