@@ -17,7 +17,7 @@ STATIC struct stivale2_header_tag_framebuffer FramebufferHdrTag = {
 	.framebuffer_bpp = 0};
 
 __attribute__((section(".stivale2hdr"), used))
-static struct stivale2_header stivale_hdr = {
+STATIC struct stivale2_header stivale_hdr = {
 	.entry_point = 0,
 	.stack = (ULONG64_PTR)Stack + sizeof(Stack),
 	.flags = (1 << 1) | (1 << 2) | (1 << 3) | (1 << 4),

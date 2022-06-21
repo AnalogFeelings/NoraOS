@@ -1,6 +1,5 @@
 #include <hal/vid.h>
 #include <rtl/debug.h>
-#include <mm/liballoc.h>
 #include <rtl/mem.h>
 #include <kdcom/kdcom.h>
 

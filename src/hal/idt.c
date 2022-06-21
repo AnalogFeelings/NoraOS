@@ -4,7 +4,7 @@ __attribute__((aligned(0x10)))
 struct IDT_ENTRY IDT[256] = {0};
 struct IDT_PTR IdtPointer = {0};
 
-extern void* HalIsrTable[];
+extern VOID* HalIsrTable[];
 
 VOID HalIDTInit(VOID) {
 	IdtPointer.Size = sizeof(IDT) - 1;
