@@ -8,7 +8,7 @@ KiProcessorHalt:
     jmp KiProcessorHalt
 
 KiPauseProcessor:
-      pause
+    pause
 
 KiInterruptDisable:
     cli

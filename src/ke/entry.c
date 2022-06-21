@@ -36,7 +36,7 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 	MmPhysInit(MemoryMap);
 	HalVidInit(FrameBuffer);
 
-	KdPrintFormat("\nAyo, framebuffer address: %p\n", FrameBuffer->framebuffer_addr);
+	KdPrintFormat("\nAyo, framebuffer address: 0x%p\n", FrameBuffer->framebuffer_addr);
 	KdPrintFormat("Ayo, video framebuffer size: %dx%d\n", FrameBuffer->framebuffer_width, FrameBuffer->framebuffer_height);
 
 	for (;;)
