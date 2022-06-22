@@ -8,10 +8,10 @@ typedef volatile BOOLEAN KSPIN_LOCK, *PKSPIN_LOCK;
 
 #define KiCpuid __get_cpuid
 
-EXTERN VOID KiProcessorHalt(VOID);
-EXTERN VOID KiPauseProcessor(VOID);
-EXTERN VOID KiInterruptDisable(VOID);
-EXTERN VOID KiInterruptEnable(VOID);
+#define KiProcessorHalt asm volatile("1: hlt; jmp 1b")
+#define KiPauseProcessor asm volatile("pause")
+#define KiInterruptDisable asm volatile("cli")
+#define KiInterruptEnable asm volatile("sti")
 
 VOID *KiGetStivaleTag(struct stivale2_struct *Stivale2Struct, ULONG64 Id);
 

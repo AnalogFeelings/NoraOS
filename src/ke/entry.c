@@ -38,6 +38,8 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 
 	KdPrintFormat("\nAyo, framebuffer address: 0x%p\n", FrameBuffer->framebuffer_addr);
 	KdPrintFormat("Ayo, video framebuffer size: %dx%d\n", FrameBuffer->framebuffer_width, FrameBuffer->framebuffer_height);
+    
+    asm volatile("int3"); //Test IDT
 
 	for (;;)
 		;
