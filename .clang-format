@@ -3,9 +3,21 @@ AllowShortFunctionsOnASingleLine: None
 AllowShortIfStatementsOnASingleLine: Never
 AllowShortLambdasOnASingleLine: None
 AllowShortLoopsOnASingleLine: 'false'
+BinPackParameters: 'true'
+ColumnLimit: '0'
+Cpp11BracedListStyle: 'false'
 IndentCaseLabels: 'true'
 IndentWidth: '4'
+IndentWrappedFunctionNames: 'true'
 Language: Cpp
+PointerAlignment: Right
+SortIncludes: 'false'
+SpaceAfterCStyleCast: 'false'
+SpaceBeforeAssignmentOperators: 'true'
+SpaceBeforeParens: ControlStatements
+SpacesInAngles: 'false'
+SpacesInCStyleCastParentheses: 'false'
+SpacesInParentheses: 'false'
 TabWidth: '4'
 UseTab: Always
 ...

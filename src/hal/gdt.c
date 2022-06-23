@@ -1,7 +1,7 @@
 #include <hal/gdt.h>
 
-struct GDT HalGlobalDescriptorTable = {0};
-struct GDT_POINTER HalGdtPointer = {0};
+struct GDT HalGlobalDescriptorTable = { 0 };
+struct GDT_POINTER HalGdtPointer = { 0 };
 
 VOID HalGDTInit(VOID) {
 	HalGlobalDescriptorTable.Entry[1].AccessByte = 0x9a;

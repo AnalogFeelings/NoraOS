@@ -345,7 +345,7 @@ UCHAR KiDisplayFont[4096] = {
 	0x42, 0x42, 0x42, 0x26, 0x1a, 0x02, 0x02, 0x3c, 0x00, 0x00, 0x00, 0x40,
 	0x40, 0x40, 0x5c, 0x62, 0x42, 0x42, 0x42, 0x42, 0x62, 0x5c, 0x40, 0x40,
 	0x00, 0x00, 0x24, 0x24, 0x00, 0x00, 0x42, 0x42, 0x42, 0x42, 0x42, 0x26,
-	0x1a, 0x02, 0x02, 0x3c,
+	0x1a, 0x02, 0x02, 0x3c
 };
 
 #define ISO_CHAR_MIN 0x00
@@ -353,7 +353,7 @@ UCHAR KiDisplayFont[4096] = {
 #define ISO_CHAR_WIDTH 8
 #define ISO_CHAR_HEIGHT 16
 
-struct FRAMEBUFFER HalVidFramebuffer = {0};
+struct FRAMEBUFFER HalVidFramebuffer = { 0 };
 
 VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 	HalVidFramebuffer.VideoAddress = (PUINT)VidFramebuffer->framebuffer_addr;
@@ -369,7 +369,7 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 }
 
 STATIC VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
-	if(direct)
+	if (direct)
 		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 	else
 		HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;

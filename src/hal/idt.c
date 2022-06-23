@@ -1,23 +1,24 @@
 #include <hal/idt.h>
 
-__attribute__((aligned(0x10)))
-struct IDT_ENTRY IDT[256] = {0};
-struct IDT_PTR IdtPointer = {0};
+__attribute__((aligned(0x10))) struct IDT_ENTRY IDT[256] = { 0 };
+struct IDT_PTR IdtPointer = { 0 };
 
-extern VOID* HalIsrTable[];
+extern VOID *HalIsrTable[];
 
 VOID HalIDTInit(VOID) {
 	IdtPointer.Size = sizeof(IDT) - 1;
 	IdtPointer.Address = (ULONG64)IDT;
 
-	for(UCHAR vec = 0; vec < 32; vec++) {
+	for (UCHAR vec = 0; vec < 32; vec++) {
 		HalIDTSetDescriptor(vec, HalIsrTable[vec], 0);
 	}
 
-	asm volatile("lidtq %0" : : "m"(IdtPointer));
+	asm volatile("lidtq %0"
+				 :
+				 : "m"(IdtPointer));
 }
 
-VOID HalIDTSetDescriptor(UCHAR Vector, VOID* Handler, UCHAR Ist) {
+VOID HalIDTSetDescriptor(UCHAR Vector, VOID *Handler, UCHAR Ist) {
 	ULONG64 isr = (ULONG64)Handler;
 
 	IDT[Vector].Offset1 = (USHORT)isr;

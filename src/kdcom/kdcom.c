@@ -7,16 +7,16 @@ STATIC BOOLEAN KdSerialInitialized = FALSE;
 VOID KdInitSerial(VOID) {
 	IoOutputByte(COM1 + COM_INTERRUPT_ENABLE_REG, 0x00); // Disable all interrupts.
 
-	IoOutputByte(COM1 + COM_LINE_CONTROL_REG, 0x80); // Enable DLAB. This is to set the baud divisor.
-	IoOutputByte(COM1 + COM_DATA_REG, 0x03); // Set divisor to 3. 115200 / 3 = 38400 baud.
+	IoOutputByte(COM1 + COM_LINE_CONTROL_REG, 0x80);	 // Enable DLAB. This is to set the baud divisor.
+	IoOutputByte(COM1 + COM_DATA_REG, 0x03);			 // Set divisor to 3. 115200 / 3 = 38400 baud.
 	IoOutputByte(COM1 + COM_INTERRUPT_ENABLE_REG, 0x00); // Divisor high byte.
 
-	IoOutputByte(COM1 + COM_LINE_CONTROL_REG, 0x03); // 8 bits, no parity, 1 stop bit.
+	IoOutputByte(COM1 + COM_LINE_CONTROL_REG, 0x03);  // 8 bits, no parity, 1 stop bit.
 	IoOutputByte(COM1 + COM_INT_IDENT_FIFO_CR, 0xC7); // Enable FIFO.
 	IoOutputByte(COM1 + COM_MODEM_CONTROL_REG, 0x0B); // Enable IRQs.
 
 	IoOutputByte(COM1 + COM_MODEM_CONTROL_REG, 0x1E); // Enable loopback mode. We are going to test the UART.
-	IoOutputByte(COM1 + COM_DATA_REG, 0xAE); // Send 0xAE and test if the UART returns the same byte.
+	IoOutputByte(COM1 + COM_DATA_REG, 0xAE);		  // Send 0xAE and test if the UART returns the same byte.
 
 	if (IoReadByte(COM1 + COM_DATA_REG) != 0xAE) {
 		KdSerialInitialized = FALSE;
@@ -64,7 +64,7 @@ STATIC VOID KdPrintf(PCSTR fmt, va_list args) {
 				}
 			}
 			if (*fmt == 'x' || *fmt == 'p') {
-				CHAR string[17] = {0};
+				CHAR string[17] = { 0 };
 				ULONG64 number = va_arg(args, ULONG64);
 				for (INT i = 16; i > 0; number >>= 4) {
 					string[--i] = "0123456789abcdef"[number & 0x0f];
@@ -72,7 +72,7 @@ STATIC VOID KdPrintf(PCSTR fmt, va_list args) {
 				KdPrint(string);
 			}
 			if (*fmt == 'd') {
-				CHAR string[21] = {0};
+				CHAR string[21] = { 0 };
 				ULONG64 number = va_arg(args, ULONG64);
 				for (INT i = 20; i > 0;) {
 					string[--i] = number % 10 + '0';

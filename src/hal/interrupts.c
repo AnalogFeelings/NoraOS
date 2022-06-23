@@ -2,5 +2,5 @@
 
 __attribute__((noreturn))
 VOID HalDispatchInterrupts(VOID) {
-    KeBugCheck(0x2);
+	KeBugCheck(0x2);
 }
