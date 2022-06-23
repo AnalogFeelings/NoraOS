@@ -1,7 +1,6 @@
 /* Tell the linker that we want an x86_64 ELF64 output file */
-OUTPUT_FORMAT(elf64 - x86 - 64)
-OUTPUT_ARCH(i386
-			: x86 - 64)
+OUTPUT_FORMAT(elf64-x86-64)
+OUTPUT_ARCH(i386:x86-64)
 
 /* We want the symbol _start to be our entry point */
 ENTRY(KiSystemStartup)
@@ -22,27 +21,27 @@ SECTIONS {
 	/* Any address in this region will do, but often 0xffffffff80000000 is
 	 * chosen as */
 	/* that is the beginning of the region. */
-	.= 0xffffffff80000000;
+	. = 0xffffffff80000000;
 
-	.text : { *(.text.text.*) }
+	.text : {*(.text.text.*)}
 		: text
 
 			  /* Move to the next memory page for .rodata */
-			  .+= CONSTANT(MAXPAGESIZE);
+			  . += CONSTANT(MAXPAGESIZE);
 
 	/* We place the .stivale2hdr section containing the header in its own
 	 * section, */
 	/* and we use the KEEP directive on it to make sure it doesn't get
 	 * discarded. */
-	.stivale2hdr : { KEEP(*(.stivale2hdr)) }
+	.stivale2hdr : {KEEP(*(.stivale2hdr))}
 		: rodata
 
-			  .rodata : { *(.rodata.rodata.*) } : rodata
+			  .rodata : {*(.rodata.rodata.*)} : rodata
 
 			  /* Move to the next memory page for .data */
-			  .+= CONSTANT(MAXPAGESIZE);
+			  . += CONSTANT(MAXPAGESIZE);
 
-	.data : { *(.data.data.*) } : data
+	.data : {*(.data.data.*)} : data
 
-									  .bss : { *(COMMON) * (.bss.bss.*) } : data
+									.bss : {*(COMMON) * (.bss.bss.*)} : data
 }
