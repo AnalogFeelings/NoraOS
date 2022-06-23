@@ -1,4 +1,4 @@
-#include <mm/mm.h>
+#include <mm/pmm.h>
 #include <rtl/mem.h>
 
 // Bitmap functions

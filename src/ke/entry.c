@@ -3,7 +3,7 @@
 #include <hal/vid.h>
 #include <kdcom/kdcom.h>
 #include <ke/ke.h>
-#include <mm/mm.h>
+#include <mm/pmm.h>
 #include <rtl/debug.h>
 #include <rtl/mem.h>
 #include <stivale2.h>
@@ -40,6 +40,11 @@ VOID KiSystemStartup(struct stivale2_struct *Stivale2Struct) {
 
 	KdPrintFormat("\nAyo, framebuffer address: 0x%p\n", FrameBuffer->framebuffer_addr);
 	KdPrintFormat("Ayo, video framebuffer size: %dx%d\n", FrameBuffer->framebuffer_width, FrameBuffer->framebuffer_height);
+    
+    for(;;) {
+        HalVidClearScreen(0xFF00FFF3);
+        HalVidClearScreen(0xFF000FFF);
+    }
 
 	asm volatile("int3"); //Test IDT
 

@@ -2,6 +2,7 @@
 #include <rtl/debug.h>
 #include <rtl/mem.h>
 #include <kdcom/kdcom.h>
+#include <mm/vmm.h>
 
 UCHAR KiDisplayFont[4096] = {
 	0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
@@ -361,7 +362,7 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 	HalVidFramebuffer.Bpp = VidFramebuffer->framebuffer_bpp;
 	HalVidFramebuffer.Width = VidFramebuffer->framebuffer_width;
 	HalVidFramebuffer.Height = VidFramebuffer->framebuffer_height;
-	//HalVidFramebuffer.BackAddress = (PUINT)malloc(HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+	HalVidFramebuffer.BackAddress = (PUINT)malloc(HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 	HalVidFramebuffer.TextColor = 0xFFFFFF;
 	HalVidFramebuffer.BackgroundColor = 0x000000;
 	HalVidFramebuffer.TextX = 0;
