@@ -28,7 +28,7 @@ VOID KdInitSerial(VOID) {
 
 	KdPrint("\n==============================================\n");
 	KdPrintFormat("NoraOS Version %d.%d.%d commit-%s-%s\n", NOS_VERSION_MAJOR, NOS_VERSION_MINOR, NOS_VERSION_PATCH, NOS_COMMIT_HASH, NOS_BRANCH);
-	KdPrintFormat("Built at %s %s\n", __DATE__, __TIME__);
+	KdPrintFormat("Serial running at %d baud.\n", (INT)(115200 / 3)); //TODO: make the bootloader be able to pass the divisor value into the OS?
 	KdPrint("==============================================\n");
 }
 
