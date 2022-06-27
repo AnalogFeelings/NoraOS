@@ -370,10 +370,11 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 }
 
 STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
-	if (direct)
-		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
-	else
-		HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+	if (direct) {
+        HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+    }
+    
+    HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 }
 
 STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
@@ -393,7 +394,7 @@ STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
 }
 
 STATIC INLINE VOID HalVidSwap() {
-	RtlCopyMemory(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.BackAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+	RtlCopyMemory32(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.BackAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 }
 
 VOID HalVidScroll(VOID) {
@@ -405,7 +406,7 @@ VOID HalVidScroll(VOID) {
 		((HalVidFramebuffer.Pitch * ISO_CHAR_HEIGHT) * (HalVidFramebuffer.Height / ISO_CHAR_HEIGHT)) /
 		sizeof(UINT);
 
-	RtlCopyMemory(HalVidFramebuffer.BackAddress, HalVidFramebuffer.VideoAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+	RtlCopyMemory32(HalVidFramebuffer.BackAddress, HalVidFramebuffer.VideoAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 
 	for (SIZE_T i = 0; i < ScreenSize - RowSize; i++) {
 		HalVidFramebuffer.BackAddress[i] = HalVidFramebuffer.BackAddress[i + RowSize];
@@ -416,11 +417,8 @@ VOID HalVidScroll(VOID) {
 }
 
 VOID HalVidClearScreen(UINT Color) {
-	for (INT X = 0; X < HalVidFramebuffer.Width; X++) {
-		for (INT Y = 0; Y < HalVidFramebuffer.Height; Y++) {
-			HalVidPutPx(X, Y, Color, FALSE);
-		}
-	}
+	RtlSetMemory32(HalVidFramebuffer.BackAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+    
 	HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
 
