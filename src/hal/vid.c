@@ -369,7 +369,7 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 	HalVidFramebuffer.TextY = 0;
 }
 
-STATIC VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
+STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
 	if (direct)
 		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 	else
@@ -392,7 +392,7 @@ STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
 	}
 }
 
-STATIC VOID HalVidSwap() {
+STATIC INLINE VOID HalVidSwap() {
 	RtlCopyMemory(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.BackAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 }
 
