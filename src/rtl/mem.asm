@@ -16,14 +16,14 @@ memcpy16:
     ret
     
 global memcpy32
-memcpy:
+memcpy32:
     mov rcx, rdx
     mov rax, rdi
     rep movsd
     ret
     
 global memcpy64
-memcpy:
+memcpy64:
     mov rcx, rdx
     mov rax, rdi
     rep movsq
