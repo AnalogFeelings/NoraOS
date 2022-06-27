@@ -10,6 +10,7 @@ file(GLOB_RECURSE SOURCES RELATIVE ${CMAKE_SOURCE_DIR} "src/*.c" "src/*.asm")
 add_executable(nora ${SOURCES})
 
 target_compile_options(nora PUBLIC $<$<COMPILE_LANGUAGE:C,CXX>:
+    -g
     -fno-stack-protector
     -fno-pic
     -mabi=sysv
