@@ -371,10 +371,10 @@ VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
 
 STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
 	if (direct) {
-        HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
-    }
-    
-    HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+	}
+
+	HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 }
 
 STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
@@ -418,7 +418,7 @@ VOID HalVidScroll(VOID) {
 
 VOID HalVidClearScreen(UINT Color) {
 	RtlSetMemory32(HalVidFramebuffer.BackAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
-    
+
 	HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
 

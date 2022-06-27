@@ -74,4 +74,4 @@ add_custom_command(OUTPUT ${ISO_IMAGE} DEPENDS nora
 )
 
 add_custom_target(iso ALL DEPENDS ${ISO_IMAGE})
-add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -M q35 -serial stdio -m 2G -cdrom ${ISO_IMAGE})
+add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -s -S -M q35 -serial stdio -m 2G -cdrom ${ISO_IMAGE})
