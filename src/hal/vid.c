@@ -417,10 +417,10 @@ VOID HalVidScroll(VOID) {
 }
 
 VOID HalVidClearScreen(UINT Color) {
-	RtlSetMemory32(HalVidFramebuffer.BackAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
-
-	HalVidFramebuffer.TextX = 0;
+    HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
+    
+	RtlSetMemory32(HalVidFramebuffer.BackAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 
 	HalVidSwap();
 }
