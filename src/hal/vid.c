@@ -356,12 +356,12 @@ UCHAR KiDisplayFont[4096] = {
 
 struct FRAMEBUFFER HalVidFramebuffer = { 0 };
 
-VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer) {
-	HalVidFramebuffer.VideoAddress = (PUINT)VidFramebuffer->framebuffer_addr;
-	HalVidFramebuffer.Pitch = VidFramebuffer->framebuffer_pitch;
-	HalVidFramebuffer.Bpp = VidFramebuffer->framebuffer_bpp;
-	HalVidFramebuffer.Width = VidFramebuffer->framebuffer_width;
-	HalVidFramebuffer.Height = VidFramebuffer->framebuffer_height;
+VOID HalVidInit(struct limine_framebuffer *VidFramebuffer) {
+	HalVidFramebuffer.VideoAddress = (PUINT)VidFramebuffer->address;
+	HalVidFramebuffer.Pitch = VidFramebuffer->pitch;
+	HalVidFramebuffer.Bpp = VidFramebuffer->bpp;
+	HalVidFramebuffer.Width = VidFramebuffer->width;
+	HalVidFramebuffer.Height = VidFramebuffer->height;
 	HalVidFramebuffer.BackAddress = (PUINT)malloc(HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 	HalVidFramebuffer.TextColor = 0xFFFFFF;
 	HalVidFramebuffer.BackgroundColor = 0x000000;

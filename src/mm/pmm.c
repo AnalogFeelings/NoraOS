@@ -51,31 +51,29 @@ VOID *MmAllocatePhysicalZero(ULONG64 Count) {
 	return Temp;
 }
 
-VOID MmPhysInit(struct stivale2_struct_tag_memmap *MemoryMap) {
+VOID MmPhysInit(struct limine_memmap_entry **MemoryMap, SIZE_T EntryCount) {
 	ULONG64 Top = 0;
 	// Find the top most page
-	for (ULONG64 i = 0; i < MemoryMap->entries; i++) {
-		if (MemoryMap->memmap[i].type != STIVALE2_MMAP_USABLE ||
-			MemoryMap->memmap[i].type != STIVALE2_MMAP_BOOTLOADER_RECLAIMABLE)
+	for (ULONG64 i = 0; i < EntryCount; i++) {
+		if (MemoryMap[i]->type != LIMINE_MEMMAP_USABLE ||
+			MemoryMap[i]->type != LIMINE_MEMMAP_BOOTLOADER_RECLAIMABLE)
 			continue;
-		Top = MemoryMap->memmap[i].base + MemoryMap->memmap[i].length;
+		Top = MemoryMap[i]->base + MemoryMap[i]->length;
 		if (Top > HighestPage)
 			HighestPage = Top;
 	}
 	// Calculate the bitmap size and get the bitmap address
 	ULONG64 BitmapSize = ALIGN_UP(ALIGN_DOWN(HighestPage) / PAGE_SIZE / 8);
-	for (ULONG64 i = 0; i < MemoryMap->entries; i++) {
-		if (MemoryMap->memmap[i].type == STIVALE2_MMAP_USABLE &&
-			MemoryMap->memmap[i].base >= BitmapSize) {
-			MiPhysBitmap =
-				(UCHAR *)(MemoryMap->memmap[i].base + PHYS_MEM_OFFSET);
+	for (ULONG64 i = 0; i < EntryCount; i++) {
+		if (MemoryMap[i]->type == LIMINE_MEMMAP_USABLE &&
+			MemoryMap[i]->base >= BitmapSize) {
+			MiPhysBitmap = (UCHAR *)(MemoryMap[i]->base + PHYS_MEM_OFFSET);
 			break;
 		}
 	}
 	RtlSetMemory(MiPhysBitmap, 0xff, BitmapSize);
-	for (ULONG64 i = 0; i < MemoryMap->entries; i++) {
-		if (MemoryMap->memmap[i].type == STIVALE2_MMAP_USABLE)
-			MmFreePages((VOID *)MemoryMap->memmap[i].base,
-						MemoryMap->memmap[i].length / PAGE_SIZE);
+	for (ULONG64 i = 0; i < EntryCount; i++) {
+		if (MemoryMap[i]->type == LIMINE_MEMMAP_USABLE)
+			MmFreePages((VOID *)MemoryMap[i]->base, MemoryMap[i]->length / PAGE_SIZE);
 	}
 }

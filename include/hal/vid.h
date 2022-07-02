@@ -1,7 +1,7 @@
 #pragma once
 
 #include <nos_types.h>
-#include <stivale2.h>
+#include <limine.h>
 
 struct FRAMEBUFFER {
 	PUINT VideoAddress;
@@ -13,7 +13,7 @@ struct FRAMEBUFFER {
 	UINT BackgroundColor;
 };
 
-VOID HalVidInit(struct stivale2_struct_tag_framebuffer *VidFramebuffer);
+VOID HalVidInit(struct limine_framebuffer *VidFramebuffer);
 VOID HalVidClearScreen(UINT Color);
 VOID HalVidSetTextColor(UINT Color);
 VOID HalVidPrintC(CHAR c);

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <nos_types.h>
-#include <stivale2.h>
 #include <cpuid.h>
 
 typedef volatile BOOLEAN KSPIN_LOCK, *PKSPIN_LOCK;
@@ -12,8 +11,6 @@ typedef volatile BOOLEAN KSPIN_LOCK, *PKSPIN_LOCK;
 #define KiPauseProcessor asm volatile("pause")
 #define KiInterruptDisable asm volatile("cli")
 #define KiInterruptEnable asm volatile("sti")
-
-VOID *KiGetStivaleTag(struct stivale2_struct *Stivale2Struct, ULONG64 Id);
 
 INLINE VOID KeAcquireSpinlock(PKSPIN_LOCK Lock);
 INLINE VOID KeDropSpinlock(PKSPIN_LOCK Lock);

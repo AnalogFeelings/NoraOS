@@ -42,7 +42,6 @@ target_link_options(nora PUBLIC
 
 target_include_directories(nora PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/include
-    ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/stivale
 )
 
 # Stack Overflow is a blessing
@@ -68,10 +67,11 @@ add_custom_command(OUTPUT ${ISO_IMAGE} DEPENDS nora
     COMMAND make -C ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine
     COMMAND mkdir -p ${CMAKE_CURRENT_BINARY_DIR}/sysroot/boot
     COMMAND cp ${CMAKE_CURRENT_BINARY_DIR}/nora.elf ${CMAKE_CURRENT_SOURCE_DIR}/src/limine.cfg ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine.sys ${CMAKE_CURRENT_BINARY_DIR}/sysroot/boot
-    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-cd.bin ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-eltorito-efi.bin ${CMAKE_CURRENT_BINARY_DIR}/sysroot
-    COMMAND xorriso -as mkisofs -b limine-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table --efi-boot limine-eltorito-efi.bin -efi-boot-part --efi-boot-image --protective-msdos-label ${CMAKE_CURRENT_BINARY_DIR}/sysroot -o ${CMAKE_CURRENT_BINARY_DIR}/${ISO_IMAGE}
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-install ${CMAKE_CURRENT_BINARY_DIR}/${ISO_IMAGE}
+    COMMAND cp ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-cd.bin ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-cd-efi.bin ${CMAKE_CURRENT_BINARY_DIR}/sysroot
+    COMMAND xorriso -as mkisofs -b limine-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table --efi-boot limine-cd-efi.bin -efi-boot-part --efi-boot-image --protective-msdos-label ${CMAKE_CURRENT_BINARY_DIR}/sysroot -o ${CMAKE_CURRENT_BINARY_DIR}/${ISO_IMAGE}
+    COMMAND chmod +x ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-deploy
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/subprojects/limine/limine-deploy ${CMAKE_CURRENT_BINARY_DIR}/${ISO_IMAGE}
 )
 
 add_custom_target(iso ALL DEPENDS ${ISO_IMAGE})
-add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -s -S -M q35 -serial stdio -m 2G -cdrom ${ISO_IMAGE})
+add_custom_target(run DEPENDS ${ISO_IMAGE} COMMAND qemu-system-x86_64 -M q35 -serial stdio -m 2G -cdrom ${ISO_IMAGE})
