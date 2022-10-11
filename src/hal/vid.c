@@ -363,9 +363,11 @@ VOID HalVidInit(struct limine_framebuffer *VidFramebuffer) {
 	HalVidFramebuffer.Width = VidFramebuffer->width;
 	HalVidFramebuffer.Height = VidFramebuffer->height;
 	HalVidFramebuffer.TextColor = 0xFFFFFF;
-	HalVidFramebuffer.BackgroundColor = 0x000000;
+	HalVidFramebuffer.BackgroundColor = 0x012456;
 	HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
+
+	HalVidClearScreen(HalVidFramebuffer.BackgroundColor);
 }
 
 STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color) {
