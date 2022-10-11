@@ -5,11 +5,13 @@
 VOID KeBugCheckEx(UINT Error, UINT Code0, UINT Code1, UINT Code2, UINT Code3) {
 	KiInterruptDisable;
 
-	RtlDebugPrint("\n[==================== BUGCHECK ====================]\n");
+	RtlDebugPrint("\n\n[==================== BUGCHECK ====================]\n");
 	RtlDebugPrint("The system has halted to prevent further corruption.\n");
+	RtlDebugPrint("Please reboot the system.\n");
 
-	KdPrintFormat("\n[==================== BUGCHECK ====================]\n");
+	KdPrintFormat("\n\n[==================== BUGCHECK ====================]\n");
 	KdPrintFormat("The system has halted to prevent further corruption.\n");
+	KdPrintFormat("Please reboot the system.\n");
 
 	RtlDebugPrint("\n*** STOP: 0x%p (0x%p:0x%p:0x%p:0x%p)\n", Error, Code0, Code1, Code2, Code3);
 	KdPrintFormat("\n*** STOP: 0x%p (0x%p:0x%p:0x%p:0x%p)\n", Error, Code0, Code1, Code2, Code3);
