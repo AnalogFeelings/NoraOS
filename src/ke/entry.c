@@ -28,6 +28,8 @@ VOID KiSystemStartup(VOID) {
 	MmPhysInit(MemoryMap, MemoryMapEntryCount);
 	HalVidInit(Framebuffer);
 
+	HalVidPrint("Greetings from NoraOS!");
+
 	KdPrintFormat("\nAyo, framebuffer address: 0x%p\n", Framebuffer->address);
 	KdPrintFormat("Ayo, video framebuffer size: %dx%d\n", Framebuffer->width, Framebuffer->height);
 

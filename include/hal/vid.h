@@ -5,7 +5,6 @@
 
 struct FRAMEBUFFER {
 	PUINT VideoAddress;
-	PUINT BackAddress;
 	ULONG64 Pitch, Bpp;
 	USHORT Width, Height;
 	ULONG64 TextX, TextY;

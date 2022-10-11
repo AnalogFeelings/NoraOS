@@ -362,19 +362,14 @@ VOID HalVidInit(struct limine_framebuffer *VidFramebuffer) {
 	HalVidFramebuffer.Bpp = VidFramebuffer->bpp;
 	HalVidFramebuffer.Width = VidFramebuffer->width;
 	HalVidFramebuffer.Height = VidFramebuffer->height;
-	HalVidFramebuffer.BackAddress = (PUINT)malloc(HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 	HalVidFramebuffer.TextColor = 0xFFFFFF;
 	HalVidFramebuffer.BackgroundColor = 0x000000;
 	HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
 }
 
-STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color, BOOLEAN direct) {
-	if (direct) {
-		HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
-	}
-
-	HalVidFramebuffer.BackAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
+STATIC INLINE VOID HalVidPutPx(INT x, INT y, UINT Color) {
+	HalVidFramebuffer.VideoAddress[y * (HalVidFramebuffer.Pitch / sizeof(UINT)) + x] = Color;
 }
 
 STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
@@ -386,16 +381,16 @@ STATIC VOID HalVidPutc(CHAR c, INT X, INT Y) {
 		for (UINT YBit = 0; YBit <= 8; YBit++) {
 			if (Line & (1 << (8 - YBit - 1))) {
 				if (HalVidFramebuffer.Width * HalVidFramebuffer.Height > (Y + XBit) * HalVidFramebuffer.Width + X + YBit) {
-					HalVidPutPx(X + YBit, Y + XBit, HalVidFramebuffer.TextColor, TRUE);
+					HalVidPutPx(X + YBit, Y + XBit, HalVidFramebuffer.TextColor);
 				}
 			}
 		}
 	}
 }
 
-STATIC INLINE VOID HalVidSwap() {
+/*STATIC INLINE VOID HalVidSwap() {
 	RtlCopyMemory32(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.BackAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
-}
+}*/
 
 VOID HalVidScroll(VOID) {
 	HalVidFramebuffer.TextY--;
@@ -406,23 +401,19 @@ VOID HalVidScroll(VOID) {
 		((HalVidFramebuffer.Pitch * ISO_CHAR_HEIGHT) * (HalVidFramebuffer.Height / ISO_CHAR_HEIGHT)) /
 		sizeof(UINT);
 
-	RtlCopyMemory32(HalVidFramebuffer.BackAddress, HalVidFramebuffer.VideoAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
+	RtlCopyMemory32(HalVidFramebuffer.VideoAddress, HalVidFramebuffer.VideoAddress, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 
 	for (SIZE_T i = 0; i < ScreenSize - RowSize; i++) {
-		HalVidFramebuffer.BackAddress[i] = HalVidFramebuffer.BackAddress[i + RowSize];
-		HalVidFramebuffer.BackAddress[i + RowSize] = HalVidFramebuffer.BackgroundColor;
+		HalVidFramebuffer.VideoAddress[i] = HalVidFramebuffer.VideoAddress[i + RowSize];
+		HalVidFramebuffer.VideoAddress[i + RowSize] = HalVidFramebuffer.BackgroundColor;
 	}
-
-	HalVidSwap();
 }
 
 VOID HalVidClearScreen(UINT Color) {
     HalVidFramebuffer.TextX = 0;
 	HalVidFramebuffer.TextY = 0;
     
-	RtlSetMemory32(HalVidFramebuffer.BackAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
-
-	HalVidSwap();
+	RtlSetMemory32(HalVidFramebuffer.VideoAddress, Color, HalVidFramebuffer.Height * HalVidFramebuffer.Pitch);
 }
 
 VOID HalVidSetTextColor(UINT Color) {
