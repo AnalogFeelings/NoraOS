@@ -13,9 +13,7 @@ VOID HalIDTInit(VOID) {
 		HalIDTSetDescriptor(vec, HalIsrTable[vec], 0);
 	}
 
-	asm volatile("lidtq %0"
-				 :
-				 : "m"(IdtPointer));
+	asm volatile("lidt %0" : : "m"(IdtPointer));
 }
 
 VOID HalIDTSetDescriptor(UCHAR Vector, VOID *Handler, UCHAR Ist) {

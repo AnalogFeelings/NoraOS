@@ -7,7 +7,7 @@ typedef volatile BOOLEAN KSPIN_LOCK, *PKSPIN_LOCK;
 
 #define KiCpuid __get_cpuid
 
-#define KiProcessorHalt asm volatile("1: hlt; jmp 1b")
+#define KiProcessorHalt asm volatile("cli; hlt")
 #define KiPauseProcessor asm volatile("pause")
 #define KiInterruptDisable asm volatile("cli")
 #define KiInterruptEnable asm volatile("sti")

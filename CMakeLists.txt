@@ -11,6 +11,7 @@ add_executable(nora ${SOURCES})
 
 target_compile_options(nora PUBLIC $<$<COMPILE_LANGUAGE:C,CXX>:
     -g
+    -std=gnu99
     -fno-stack-protector
     -fno-pic
     -mabi=sysv
